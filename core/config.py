@@ -1,20 +1,39 @@
+# core/config.py
 from functools import lru_cache
-from pydantic_settings import BaseSettings
-from pydantic import Field
+from pathlib import Path
+from pydantic import BaseModel, ValidationError, model_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
+import logging
 
 
 class Settings(BaseSettings):
-    db_path: str = Field(..., env="DB_PATH")
-    api_key: str | None = Field(None, env="API_KEY")
-    min_my_weight: float = Field(60, env="MIN_MY_WEIGHT")
-    max_my_weight: float = Field(150, env="MAX_MY_WEIGHT")
-    rate_limit: int = Field(60, env="RATE_LIMIT")
-    log_level: str = Field("INFO", env="LOG_LEVEL")
+    # единый источник настроек
+    model_config = SettingsConfigDict(
+        env_prefix="GADGETBRIDGE_",   # <-- всё начинается с этого префикса
+        env_file=".env",
+        env_file_encoding="utf-8",
+    )
 
-    class Config:
-        env_file = ".env"
-        env_file_encoding = "utf-8"
+    # поля
+    db_path: Path
+    api_key: str | None = None
+    min_my_weight: float = 60
+    max_my_weight: float = 150
+    rate_limit: int = 60
+    log_level: str = "INFO"
 
+    @model_validator(mode="after")
+    def validate_settings(self):
+        errors = []
+        if self.min_my_weight >= self.max_my_weight:
+            errors.append("min_my_weight должен быть меньше max_my_weight")
+        if not self.db_path or not self.db_path.exists():
+            errors.append(f"Файл базы данных не найден: {self.db_path}")
+        if errors:
+            for err in errors:
+                logging.error(f"[Settings validation] {err}")
+            raise ValueError("; ".join(errors))
+        return self
 
 @lru_cache
 def get_settings() -> Settings:
