@@ -27,8 +27,8 @@
 
 1. **Клонируйте репозиторий и перейдите в папку проекта:**
    ```sh
-   git clone <repo_url>
-   cd <project_folder>
+   git clone https://github.com/HonkyMan/gadgetbridge-db-api.git
+   cd app
    ```
 
 2. **Создайте и активируйте виртуальное окружение:**
