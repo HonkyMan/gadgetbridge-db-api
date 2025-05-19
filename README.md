@@ -43,13 +43,14 @@
    ```
 
 4. **Настройте переменные окружения в `.env`:**
+   > **Важно!** Все переменные должны быть с префиксом `GADGETBRIDGE_` (как в примере ниже):
    ```ini
-   DB_PATH=/путь/к/вашей/Gadgetbridge.db
-   API_KEY=ваш_секретный_ключ
-   MIN_MY_WEIGHT=80
-   MAX_MY_WEIGHT=150
-   RATE_LIMIT=60
-   LOG_LEVEL=INFO
+   GADGETBRIDGE_DB_PATH=/путь/к/вашей/Gadgetbridge.db
+   GADGETBRIDGE_API_KEY=ваш_секретный_ключ
+   GADGETBRIDGE_MIN_MY_WEIGHT=80
+   GADGETBRIDGE_MAX_MY_WEIGHT=150
+   GADGETBRIDGE_RATE_LIMIT=60
+   GADGETBRIDGE_LOG_LEVEL=INFO
    ```
 
 5. **Запустите сервер:**
@@ -79,5 +80,5 @@ GET /health
 ```
 
 ## Важные замечания
-- Все чувствительные параметры (ключи, пути, лимиты) вынесены в `.env`.
+- Все чувствительные параметры (ключи, пути, лимиты) вынесены в `.env` **с префиксом GADGETBRIDGE_**.
 - Для production рекомендуется ограничить CORS и использовать HTTPS.
